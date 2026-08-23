@@ -39,16 +39,16 @@ The skill defaults to "measure before mutating":
 Install with the Skills CLI:
 
 ```bash
-npx skills add https://github.com/yfdskr/cuddly-meme --skill cde-clear -g -a codex -y
+npx skills add https://github.com/yfdskr/CDE-clear --skill cde-clear -g -a codex -y
 ```
 
 If your Skills CLI expects a repository path layout, use:
 
 ```bash
-npx skills add https://github.com/yfdskr/cuddly-meme --skill cde-clear
+npx skills add https://github.com/yfdskr/CDE-clear --skill cde-clear
 ```
 
-The repository can be renamed later without changing the skill itself.
+This repository is the public home for the CDE-clear skill.
 
 ## Usage
 

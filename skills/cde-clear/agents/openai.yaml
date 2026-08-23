@@ -1,0 +1,5 @@
+interface:
+  display_name: "CDE-clear"
+  short_description: "Safe Windows disk cleanup and cache relocation"
+  brand_color: "#0F766E"
+  default_prompt: "Use $cde-clear to scan my Windows drives, recommend cleanup options, and help move future caches away from C:."

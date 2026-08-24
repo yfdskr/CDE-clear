@@ -1,0 +1,3 @@
+display_name: Skill Advisor
+short_description: Recommend, organize, and present installed skills for a task.
+default_prompt: "Review my task and installed skills, then recommend useful skills or show an organized skill catalog. Ask me before using or installing anything."

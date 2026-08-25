@@ -1,41 +1,44 @@
-# yfdskr Skills
+# CDE-clear
 
-Personal Codex skills for practical Windows maintenance, skill discovery, and project workflow support.
+`CDE-clear` is a Codex skill for safely freeing disk space on Windows PCs. It focuses on practical C:/D:/E: drive cleanup, cache discovery, package-manager cache removal, and moving future cache growth away from the system drive.
 
-This repository is organized as a multi-skill collection:
+The skill is intentionally conservative: it inspects first, separates safe cleanup from risky cleanup, and avoids deleting personal files, installed applications, browser profiles, system folders, or active projects without explicit user direction.
 
-```text
-skills/
-  cde-clear/
-    SKILL.md
-    agents/openai.yaml
-  skill-advisor/
-    SKILL.md
-    agents/openai.yaml
-    scripts/list-local-skills.ps1
-```
+## What It Helps With
 
-## Available Skills
+- Scan fixed drives and summarize free/used space.
+- Find large user-level folders under `AppData`, `Documents`, `ProgramData`, temp folders, and developer cache locations.
+- Offer cleanup modes instead of guessing what the user wants.
+- Clear safe, regenerable caches through tool-supported commands where possible.
+- Move future cache growth from `C:` to `D:` or `E:` using user-level config and environment variables.
+- Explain administrator-only cleanup options such as DISM component cleanup without silently running them.
 
-### CDE-clear
+## Cleanup Modes
 
-`cde-clear` helps safely free disk space on Windows PCs, especially C/D/E drive cleanup, cache removal, and user-level cache relocation.
+- `scan`: inventory only; no deletion or configuration changes.
+- `safe`: temp files, package-manager caches, and browser cache candidates.
+- `dev`: npm, pip, pnpm, Yarn, Gradle, Maven, NuGet, Cargo, Conda, Hugging Face, Playwright, Cypress, Android build caches, and identified project build artifacts.
+- `app`: app-specific cache inspection for browsers, chat apps, Adobe, Lenovo, WPS, OpenAI/Codex, game launchers, and updaters.
+- `migrate`: configure future caches to grow on another drive such as `E:\DevCache`.
+- `deep`: explain or provide administrator commands for Windows component cleanup, update cleanup, hibernation, restore points, and Storage Sense.
 
-Use it when you want to:
+## Installation
 
-- Scan C/D/E drives and understand where space is used.
-- Clean safe, regenerable caches.
-- Review developer caches such as npm, pip, Gradle, pnpm, Yarn, Maven, NuGet, Cargo, Conda, Playwright, Cypress, and Hugging Face.
-- Move future cache growth away from `C:` to another drive such as `D:` or `E:`.
-- Get conservative Windows cleanup guidance without accidentally deleting personal files or application data.
-
-Install:
+Install with the Skills CLI:
 
 ```bash
-npx skills add https://github.com/yfdskr/skills --skill cde-clear -g -a codex -y
+npx skills add https://github.com/yfdskr/CDE-clear -g -a codex -y
 ```
 
-Usage examples:
+You can also specify the skill explicitly:
+
+```bash
+npx skills add https://github.com/yfdskr/CDE-clear --skill cde-clear -g -a codex -y
+```
+
+## Usage
+
+After installation, ask Codex for cleanup help naturally:
 
 ```text
 Use $cde-clear to scan my C/D/E drives and tell me what is safe to clean.
@@ -45,52 +48,27 @@ Use $cde-clear to scan my C/D/E drives and tell me what is safe to clean.
 Use $cde-clear to move future npm, pip, and Gradle caches away from C: to E:.
 ```
 
-### Skill Advisor
-
-`skill-advisor` recommends, organizes, and presents installed skills for a user's task. It helps users avoid manually remembering which skills they have installed.
-
-Use it when you want to:
-
-- Decide which installed skills fit a task.
-- View installed skills as a compact skill map.
-- Group skills by category, such as planning, research, frontend, automation, review, or system configuration.
-- Understand which broad project phase a skill helps with: discovery, planning, build, review, or operate.
-- Ask before using local skills, searching remote skills, or installing anything new.
-
-Install:
-
-```bash
-npx skills add https://github.com/yfdskr/skills --skill skill-advisor -g -a codex -y
+```text
+Use $cde-clear in safe mode. Clean only regenerable caches and report before/after free space.
 ```
 
-Usage examples:
+## Repository Layout
 
 ```text
-Use $skill-advisor to recommend which skills fit this task.
-```
-
-```text
-Use $skill-advisor to organize my installed skills by category and project phase.
-```
-
-```text
-Use $skill-advisor to check whether I already have a skill for this workflow before searching online.
-```
-
-## Install From a Direct Skill Path
-
-If your Skills CLI prefers a direct GitHub tree URL, use these forms:
-
-```bash
-npx skills add https://github.com/yfdskr/skills/tree/main/skills/cde-clear -g -a codex -y
-npx skills add https://github.com/yfdskr/skills/tree/main/skills/skill-advisor -g -a codex -y
+SKILL.md
+agents/
+  openai.yaml
+README.md
+LICENSE
 ```
 
 ## Notes
 
-- `cde-clear` is Windows-first and intentionally conservative.
-- `skill-advisor` is an advisory routing skill. It should not install, configure, delete, publish, or call external services without user confirmation.
-- The old `yfdskr/CDE-clear` repository name has been replaced by this multi-skill repository. Use `https://github.com/yfdskr/skills` for new installs.
+This repository contains only the `cde-clear` skill. The separate `skill-advisor` skill now lives at:
+
+```text
+https://github.com/yfdskr/skill-advisor
+```
 
 ## License
 

@@ -19,7 +19,7 @@ The skill is intentionally conservative: it inspects first, separates safe clean
 - `safe`: temp files, package-manager caches, and browser cache candidates.
 - `dev`: npm, pip, pnpm, Yarn, Gradle, Maven, NuGet, Cargo, Conda, Hugging Face, Playwright, Cypress, Android build caches, and identified project build artifacts.
 - `app`: app-specific cache inspection for browsers, chat apps, Adobe, Lenovo, WPS, OpenAI/Codex, game launchers, and updaters.
-- `migrate`: configure future caches to grow on another drive such as `E:\DevCache`.
+- `migrate`: redirect identified caches to another drive such as `E:\DevCache`, preserving existing data and tool homes by default.
 - `deep`: explain or provide administrator commands for Windows component cleanup, update cleanup, hibernation, restore points, and Storage Sense.
 
 ## Installation
@@ -45,12 +45,42 @@ Use $cde-clear to scan my C/D/E drives and tell me what is safe to clean.
 ```
 
 ```text
-Use $cde-clear to move future npm, pip, and Gradle caches away from C: to E:.
+Use $cde-clear to redirect future npm and pip caches to E:, keeping existing data and tool homes unchanged.
 ```
 
 ```text
 Use $cde-clear in safe mode. Clean only regenerable caches and report before/after free space.
 ```
+
+## Cache Migration Safety
+
+Cache-only migration keeps `CARGO_HOME`, `GRADLE_USER_HOME`, and `HF_HOME`
+unchanged: they also contain configuration, credentials, installed tools, or
+other state. Use cache-specific settings such as `HF_HUB_CACHE` instead of
+switching complete homes to empty directories. Existing caches stay in place;
+redirecting future writes does not immediately free space.
+
+Follow [the migration procedure](references/cache-migration.md) for variable
+classification, version-specific pnpm/Yarn guidance, preflight checks, original
+data protection, verification, and rollback. Complete tool-home relocation
+requires an explicit request, a stopped and verified full copy, and retention
+of the original home. A generic cache-migration request does not authorize it.
+
+Run repeatable, isolated PowerShell verification tests from the repository root:
+
+```powershell
+powershell.exe -NoProfile -File .\tests\Test-CacheCopy.Tests.ps1
+powershell.exe -NoProfile -File .\tests\Test-CacheSettings.ps1
+pwsh.exe -NoProfile -File .\tests\Test-CacheCopy.Tests.ps1
+pwsh.exe -NoProfile -File .\tests\Test-CacheSettings.ps1
+```
+
+Tests use synthetic files and do not change persistent user configuration.
+They verify copy integrity, failure cases, effective npm/pip cache paths, and
+restoration of temporary process values. Missing executables are reported as
+skipped. They do not perform live tool-home migrations. If local Windows
+PowerShell policy blocks these reviewed tests, use `-ExecutionPolicy Bypass`
+for that test process only; no persistent execution-policy change is needed.
 
 ## Repository Layout
 
@@ -58,6 +88,13 @@ Use $cde-clear in safe mode. Clean only regenerable caches and report before/aft
 SKILL.md
 agents/
   openai.yaml
+references/
+  cache-migration.md
+scripts/
+  Test-CacheCopy.ps1
+tests/
+  Test-CacheCopy.Tests.ps1
+  Test-CacheSettings.ps1
 README.md
 LICENSE
 ```

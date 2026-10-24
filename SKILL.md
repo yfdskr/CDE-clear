@@ -49,7 +49,7 @@ Offer these modes when the user wants choices:
 - `safe`: Clear user temp files older than a reasonable cutoff, package-manager caches, and browser cache folders only after confirming browsers/apps are closed.
 - `dev`: Clear developer caches such as npm, pip, pnpm, Yarn, Gradle, Maven, NuGet, Cargo, Conda, Hugging Face, Playwright, Cypress, Android build caches, and project `node_modules` only when the project/path is identified and the user agrees.
 - `app`: Inspect app-specific caches such as Chrome/Edge, WeChat, DingTalk, Adobe, Lenovo, WPS, OpenAI/Codex, game launchers, and updaters. Prefer cache folders and logs, not account/profile data.
-- `migrate`: Move future cache growth to D:/E: using user-level config and environment variables.
+- `migrate`: Redirect explicitly identified, regenerable caches to D:/E:. Keep tool homes, credentials, installed tools, and existing data in place by default. Read [the migration procedure](references/cache-migration.md) before changing configuration.
 - `deep`: Provide administrator commands for Windows component cleanup, Windows Update cleanup, hibernation settings, restore points, and Storage Sense. Do not run admin commands unless the environment is actually elevated and the user asked for it.
 
 ## Common Windows Inventory Commands
@@ -112,23 +112,28 @@ Only suggest `powercfg /hibernate off` if the user understands it disables hiber
 
 ## Moving Future Cache Growth Off C:
 
-When the user wants future C: growth reduced, create a cache root on a drive with enough free space, usually `E:\DevCache` or `D:\DevCache`, then configure user-level caches. Prefer E: when it has much more free space, unless the user chooses otherwise.
+Follow [the migration procedure](references/cache-migration.md) for classification,
+preflight, configuration examples, verification, and rollback. Use a drive with
+enough free space, usually `E:\DevCache` or `D:\DevCache`.
 
-Useful targets:
+- `NPM_CONFIG_CACHE` and `PIP_CACHE_DIR` select caches. Choose one configuration
+  mechanism per tool, record previous values, and verify the effective path.
+- `HF_HOME` includes authentication state. Keep it and `HF_TOKEN_PATH` unchanged;
+  use `HF_HUB_CACHE` for downloaded Hub repositories instead.
+- `CARGO_HOME` includes configuration, credentials, installed binaries, and
+  installation records. `GRADLE_USER_HOME` includes properties, initialization
+  scripts, downloaded JDKs, and wrapper distributions as well as caches. Do not
+  set either variable as a cache-only optimization. There is no equivalent
+  universal cache-only replacement for all their contents.
+- Preserve pnpm stores used by existing projects and distinguish Yarn Classic
+  from modern Yarn before changing settings. Do not relocate other tool homes
+  or broad variables such as `XDG_CACHE_HOME` as a shortcut.
 
-```powershell
-npm.cmd config set cache "E:\DevCache\npm"
-pip config set global.cache-dir "E:\DevCache\pip"
-pnpm config set store-dir "E:\DevCache\pnpm-store"
-yarn config set cache-folder "E:\DevCache\yarn"
-[Environment]::SetEnvironmentVariable("NPM_CONFIG_CACHE", "E:\DevCache\npm", "User")
-[Environment]::SetEnvironmentVariable("PIP_CACHE_DIR", "E:\DevCache\pip", "User")
-[Environment]::SetEnvironmentVariable("GRADLE_USER_HOME", "E:\DevCache\gradle", "User")
-[Environment]::SetEnvironmentVariable("CARGO_HOME", "E:\DevCache\cargo", "User")
-[Environment]::SetEnvironmentVariable("HF_HOME", "E:\DevCache\huggingface", "User")
-```
-
-Tell the user that environment variable changes usually require a new terminal, new Codex task, or app restart.
+Only migrate a complete tool home when the user explicitly requests that scope.
+Stop all writers, copy to a new destination without overwriting data, verify the
+copy, then switch configuration. Keep the original and rollback record. Never
+delete an old home as part of `migrate`. Restart parent apps as well as terminals;
+new child shells can inherit stale environment values from an existing app.
 
 ## What To Avoid by Default
 

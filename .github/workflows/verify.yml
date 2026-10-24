@@ -1,0 +1,21 @@
+name: Verify migration guidance helpers
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify copies and cache settings on Windows PowerShell 5.1
+        shell: powershell
+        run: |
+          .\tests\Test-CacheCopy.Tests.ps1
+          .\tests\Test-CacheSettings.ps1
+      - name: Verify copies and cache settings on PowerShell 7
+        shell: pwsh
+        run: |
+          .\tests\Test-CacheCopy.Tests.ps1
+          .\tests\Test-CacheSettings.ps1
